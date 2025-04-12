@@ -1,5 +1,5 @@
 # Use the official Python image as the base
-FROM python:3.9-slim
+FROM python:3.11
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -11,9 +11,12 @@ WORKDIR /app
 # Copy the current directory contents into the container at /app
 COPY . /app
 
-# Install any needed packages specified in requirements.txt
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+# Copy the requirements file
+COPY requirements.txt .
+
+# Install dependencies
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
 # Expose port 5000 for the Flask app
 EXPOSE 5000
