@@ -1,21 +1,17 @@
-# Use an official Python base image
-FROM python:3.11-slim
+# Use Amazon Linux 2 base
+FROM amazonlinux:2
 
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
+# Update and install necessary tools
+RUN yum update -y && \
+    yum install -y python3 python3-pip gcc gcc-c++ make
 
-# Set work directory inside the container
+# Install Flask directly
+RUN pip3 install flask
+
+# Set the working directory
 WORKDIR /app
 
-# Copy the requirements.txt first (to leverage Docker cache)
-COPY requirements.txt .
-
-# Install dependencies
-RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
-
-# Copy the rest of the application code
+# Copy all files into container
 COPY . .
 
 # Set environment variable for Flask
@@ -24,5 +20,5 @@ ENV FLASK_APP=app.py
 # Expose port 5000
 EXPOSE 5000
 
-# Command to run the Flask app
+# Command to run Flask app
 CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]
